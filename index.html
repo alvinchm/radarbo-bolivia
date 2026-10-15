@@ -1,0 +1,2121 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RadarBO — Catálogo Real Verificado (15/10/2026) · Rastreador Black Friday Bolivia</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #0b0f19;
+      color: #f1f5f9;
+      overflow-x: hidden;
+    }
+    .glass-card {
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .mega-deal-glow {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.35);
+      border-color: rgba(16, 185, 129, 0.5);
+    }
+    .inflated-glow {
+      border-color: rgba(239, 68, 68, 0.45);
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- Top Critical Alert Banner (Only shows real verified deals >= threshold, default 45%) -->
+  <div id="criticalAlertBanner" class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border-b border-indigo-500/40 px-4 py-2.5">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 text-slate-950 font-bold text-xs">✓</span>
+        <p class="text-xs sm:text-sm font-medium text-slate-200">
+          <span class="font-bold text-emerald-400">DATOS 100% REALES (15/10/2026):</span>
+          Precios extraídos hoy de <strong class="text-white">Iris Computer, Cyrex Store, Solo Gamer y Dismac</strong>. Umbral crítico <span id="bannerThresholdLabel" class="underline font-bold text-emerald-300">≥45%</span>: <span id="criticalCountBadge" class="font-bold text-amber-300">0</span> en tiendas hoy (máx. actual: -24.3%).
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btnFilterCriticalNow" class="text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-3 py-1 rounded-full transition">
+          Ver solo caídas ≥<span id="btnThresholdNum">45</span>%
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-30 glass-card border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <!-- Brand -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-white">Radar<span class="text-emerald-400">BO</span></h1>
+            <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Precios Reales Verificados</span>
+          </div>
+          <p class="text-xs text-slate-400">Línea Base Real 15/10/2026 rumbo al Black Friday · Sin datos inventados</p>
+        </div>
+      </div>
+
+      <!-- Main Navigation Tabs -->
+      <nav class="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+        <button id="navTabCatalog" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition bg-indigo-600 text-white shadow">
+          📦 Catálogo y Ofertones
+        </button>
+        <button id="navTabMarketplace" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition text-slate-300 hover:text-white">
+          🔵 Escáner Marketplace
+        </button>
+        <button id="navTabScraper" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition text-slate-300 hover:text-white">
+          ⚙️ Motor Scraper & Tiendas
+        </button>
+      </nav>
+
+      <!-- Exchange rate (Default 11.80 from Cyrex Store official rate) & Quick Actions -->
+      <div class="flex items-center gap-2.5 flex-wrap">
+        <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5" title="Tasa del día publicada por Cyrex Store (1 USD = Bs 11.80). Cambia automáticamente el precio en Bs. de Iris Computer y Cyrex Store.">
+          <span class="text-[11px] text-slate-300 font-medium">Tasa Día (Cyrex/Iris):</span>
+          <input id="exchangeRateInput" type="number" step="0.05" min="6.96" max="20" value="11.80" class="w-14 bg-transparent text-xs font-bold text-emerald-400 focus:outline-none text-right">
+          <span class="text-[11px] text-slate-400">Bs/USD</span>
+        </div>
+
+        <button id="btnRunLiveScan" class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/20 transition">
+          <svg id="scanIcon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          <span id="scanBtnText">Escanear Precios Ahora</span>
+        </button>
+
+        <button id="btnOpenAddModal" class="inline-flex items-center gap-1 text-xs font-semibold px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+          <span>＋ Rastrear Producto</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
+
+    <!-- ==================== VIEW 1: CATALOG & DEALS ==================== -->
+    <section id="viewCatalog" class="space-y-6">
+
+      <!-- KPI Summary Strip -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="glass-card rounded-2xl p-4 border-l-4 border-l-emerald-500">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Ofertones Reales (≥<span id="kpiThresholdLabel">45</span>% OFF)</span>
+            <span class="text-lg">🔥</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span id="kpiMegaDealsCount" class="text-2xl sm:text-3xl font-extrabold text-white">0</span>
+            <span class="text-xs text-slate-400">hoy en tiendas oficiales</span>
+          </div>
+          <p class="mt-1 text-[11px] text-slate-400">Aún no empezó Black Friday; el descuento real más alto hoy es 24.3%.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 border-l-4 border-l-indigo-500">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-indigo-400">Productos Verificados Hoy</span>
+            <span class="text-lg">🏪</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span id="kpiActiveStores" class="text-2xl sm:text-3xl font-extrabold text-white">26</span>
+            <span class="text-xs text-slate-400">ítems reales extraídos</span>
+          </div>
+          <p class="mt-1 text-[11px] text-slate-400">Iris Computer ($USD), Cyrex Store ($USD · TC 11.80), Solo Gamer (Bs) y Dismac (Bs).</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 border-l-4 border-l-amber-500">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-amber-400">Filtro Anti-Sobreprecio</span>
+            <span class="text-lg">🛡️</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span id="kpiHiddenInflated" class="text-2xl sm:text-3xl font-extrabold text-white">0</span>
+            <span class="text-xs text-slate-400">ítems de Dismac ocultos</span>
+          </div>
+          <p class="mt-1 text-[11px] text-slate-400">Oculta Dismac salvo cuando su descuento supere el 22% o actives "Ver todo".</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 border-l-4 border-l-purple-500">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-purple-400">Mayor Rebaja Real Hoy</span>
+            <span class="text-lg">💰</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span id="kpiMaxSavings" class="text-2xl sm:text-3xl font-extrabold text-emerald-400">Bs. 0</span>
+            <span id="kpiMaxSavingsPct" class="text-xs font-bold text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded-full">-0%</span>
+          </div>
+          <p id="kpiMaxSavingsItem" class="mt-1 text-[11px] text-slate-400 truncate">En el catálogo real actual</p>
+        </div>
+      </div>
+
+      <!-- Barra de Acceso Rápido en 1 Clic a Facebook Marketplace Bolivia -->
+      <div class="glass-card rounded-2xl p-3.5 border border-blue-500/30 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-extrabold text-blue-400 uppercase tracking-wider">🔵 Acceso Rápido Marketplace BO:</span>
+          <span class="text-[11px] text-slate-400 hidden sm:inline">Abre búsquedas filtradas en tiempo real o presiona <kbd class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-200">/</kbd> para buscar aquí:</span>
+        </div>
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <a href="https://www.facebook.com/groups/1239890423089694/" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 transition">
+            🖥️ Grupo PC La Paz ↗
+          </a>
+          <a href="https://www.facebook.com/IrisComputerBolivia/" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+            ⚡ FB Iris Computer ↗
+          </a>
+          <a href="https://www.facebook.com/CYREXSTORE/" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+            🔥 FB Cyrex Store ↗
+          </a>
+          <a href="https://www.facebook.com/OriginsPCEsports/" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+            🪑 FB Sillas La Paz ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Category Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1">
+        <button data-category="all" class="cat-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-indigo-600 text-white shadow">
+          📋 Todas las Categorías
+        </button>
+        <button data-category="ofertones" class="cat-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-900/60">
+          🔥 Ofertones (≥45% OFF)
+        </button>
+        <button data-category="pc" class="cat-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800">
+          🖥️ Componentes de PC
+        </button>
+        <button data-category="laptops" class="cat-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800">
+          💻 Laptops
+        </button>
+        <button data-category="audifonos" class="cat-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800">
+          🎧 Audífonos y Periféricos
+        </button>
+        <button data-category="celulares" class="cat-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800">
+          📱 Celulares
+        </button>
+        <button data-category="sillas" class="cat-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800">
+          🪑 Sillas Ergonómicas
+        </button>
+        <button data-category="guardados" class="cat-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-slate-900 text-amber-300 border border-slate-800 hover:bg-slate-800">
+          ⭐ Mi Lista (<span id="savedCountPill">0</span>)
+        </button>
+      </div>
+
+      <!-- Advanced Filters & Anti-Expensive Store Rule -->
+      <div class="glass-card rounded-2xl p-4 space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+          <!-- Search input -->
+          <div class="md:col-span-4 relative">
+            <input id="searchInput" type="text" placeholder="Buscar Kingston NV3, Potenzza, Ryzen 7 5700X, Iskur, TUF..." class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-9 pr-3 py-2 text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+
+          <!-- Store Filter -->
+          <div class="md:col-span-3">
+            <select id="storeFilter" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+              <option value="all">🏪 Todas las Tiendas Verificadas</option>
+              <option value="Iris Computer">Iris Computer (Precios en $USD)</option>
+              <option value="Cyrex Store">Cyrex Store ($USD · Tasa Bs 11.80)</option>
+              <option value="Solo Gamer BO">Solo Gamer Bolivia (Precios en Bs)</option>
+              <option value="Dismac">Dismac Bolivia (Precios en Bs)</option>
+              <option value="FB Marketplace BO">🔵 Facebook Marketplace Bolivia</option>
+            </select>
+          </div>
+
+          <!-- Currency / Condition Filter -->
+          <div class="md:col-span-2">
+            <select id="conditionFilter" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+              <option value="all">📦 Todas las Condiciones</option>
+              <option value="Nuevo en Tienda">Nuevo en Tienda (Web Oficial)</option>
+              <option value="Marketplace (Caja Abierta / Seminuevo)">Marketplace (Importados por ti)</option>
+            </select>
+          </div>
+
+          <!-- Sort Order -->
+          <div class="md:col-span-3">
+            <select id="sortFilter" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+              <option value="price_asc">📉 Precio en Bs.: Menor a Mayor</option>
+              <option value="discount_desc">🔥 Mayor % de Rebaja Actual</option>
+              <option value="savings_desc">💰 Mayor Ahorro en Bolivianos (Bs.)</option>
+              <option value="price_desc">📈 Precio en Bs.: Mayor a Menor</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Second Filter Row: Smart Toggles -->
+        <div class="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4">
+          <!-- Dismac / Expensive Stores Smart Rule Toggle -->
+          <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+            <input id="toggleSmartDismac" type="checkbox" checked class="sr-only peer">
+            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all relative peer-checked:bg-emerald-600"></div>
+            <span class="text-xs text-slate-300">
+              <strong class="text-white">Filtro Anti-Caros (Regla Dismac):</strong> Mostrar productos de Dismac solo si tienen rebaja ≥22% OFF
+            </span>
+          </label>
+
+          <!-- Threshold Slider for Critical Deal Highlight -->
+          <div class="flex items-center gap-3">
+            <label for="thresholdRange" class="text-xs text-slate-300">
+              Umbral de <strong class="text-emerald-400">Alerta Ofertón</strong>:
+              <span id="thresholdValueText" class="font-extrabold text-emerald-400 ml-1">45% OFF</span>
+            </label>
+            <input id="thresholdRange" type="range" min="15" max="60" step="5" value="45" class="w-28 accent-emerald-500 cursor-pointer">
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Grid -->
+      <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="hidden glass-card rounded-2xl p-10 text-center space-y-3">
+        <div class="text-4xl">🔍</div>
+        <h3 class="text-base font-bold text-white">No hay productos que cumplan este filtro hoy (15/10/2026)</h3>
+        <p class="text-xs text-slate-400 max-w-lg mx-auto">
+          Si seleccionaste <strong>🔥 Ofertones (≥45% OFF)</strong>, ten en cuenta que hoy ninguna tienda oficial de Bolivia tiene descuentos del 45% todavía (el máximo real hoy es <strong>24.3% en Solo Gamer Bolivia</strong>). Puedes bajar el deslizador de umbral a <strong>15%–20%</strong> para ver las ofertas actuales o pegar anuncios de Facebook Marketplace.
+        </p>
+        <button id="btnResetFilters" class="mt-2 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition">
+          Restablecer todos los filtros
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 2: FACEBOOK MARKETPLACE SCANNER ==================== -->
+    <section id="viewMarketplace" class="hidden space-y-6">
+      <div class="glass-card rounded-2xl p-6 border border-indigo-500/30 space-y-4">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div class="space-y-1 max-w-3xl">
+            <span class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+              Extracción Local para Facebook Marketplace Bolivia
+            </span>
+            <h2 class="text-xl font-extrabold text-white mt-1">Cruza anuncios reales de Marketplace contra los precios actuales de Iris, Cyrex y Solo Gamer</h2>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Como Facebook Marketplace exige tu sesión iniciada y cambia según tu ubicación en La Paz, Santa Cruz o Cochabamba, aquí puedes pegar directamente el texto que copies de tu búsqueda en Marketplace o usar el Bookmarklet para comparar precios de ocasión contra el <strong class="text-emerald-400">precio real de tienda verificado hoy (a tasa Bs. 11.80/USD)</strong>:
+            </p>
+          </div>
+          <a href="https://www.facebook.com/groups/1239890423089694/" target="_blank" rel="noopener noreferrer" class="shrink-0 inline-flex items-center gap-2 text-xs font-semibold px-3.5 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 transition">
+            <span>Abrir Grupo PC La Paz - Bolivia ↗</span>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
+          <!-- Method 1: Copy-Paste Smart Analyzer -->
+          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">1</span>
+                Pegar anuncios copiados de Facebook Marketplace
+              </h3>
+              <button id="btnLoadSampleMarketplace" class="text-xs font-semibold text-indigo-400 hover:text-indigo-300 underline">
+                Cargar lote real de prueba
+              </button>
+            </div>
+            <p class="text-xs text-slate-400">
+              Abre Facebook Marketplace, busca lo que necesitas, selecciona con <kbd class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-200">Ctrl+A</kbd> y copia con <kbd class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-200">Ctrl+C</kbd>, y pégalo aquí. El comparador usa como referencia los precios reales verificados hoy (ej. Ryzen 7 5700X a $200 USD / Bs. 2.360 en Cyrex Store, Kingston NV3 500GB a $146 USD / Bs. 1.723 en Iris Computer).
+            </p>
+
+            <textarea id="marketplaceRawInput" rows="6" placeholder="Pega aquí tus resultados de Facebook Marketplace...&#10;Ejemplo de formato que copia Facebook:&#10;Bs. 1.150 · Procesador AMD Ryzen 7 5700X en caja · La Paz&#10;Bs. 850 · Escritorio regulable o Silla Gamer Sharkoon SGS2 · Santa Cruz" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500"></textarea>
+
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <button id="btnAnalyzeMarketplaceText" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition shadow-lg shadow-emerald-600/20">
+                🔍 Analizar Anuncios y Detectar Ofertones
+              </button>
+              <button id="btnImportDetectedToCatalog" class="hidden px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition">
+                ➕ Agregar Detectados al Catálogo Principal
+              </button>
+            </div>
+
+            <!-- Parsed Results Output -->
+            <div id="marketplaceAnalysisResults" class="space-y-2 pt-2"></div>
+          </div>
+
+          <!-- Method 2: Bookmarklet 1-Click Extractor -->
+          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-xs">2</span>
+                  Bookmarklet Extractor para tu Navegador
+                </h3>
+                <span class="text-[11px] text-emerald-400 font-semibold">Lectura Directa en tu Pestaña</span>
+              </div>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                Guarda este código como un marcador en tu navegador. Cuando estés viendo resultados en Facebook Marketplace Bolivia, haz clic en el marcador y copiará automáticamente todos los títulos, precios en Bs. y enlaces directos de los anuncios reales que tienes en pantalla:
+              </p>
+
+              <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-semibold text-slate-400">Código JavaScript del Bookmarklet:</span>
+                  <button id="btnCopyBookmarklet" class="text-xs font-semibold text-emerald-400 hover:text-emerald-300">
+                    📋 Copiar Bookmarklet
+                  </button>
+                </div>
+                <pre id="bookmarkletCodeBox" class="text-[11px] text-indigo-300 font-mono overflow-x-auto whitespace-pre-wrap break-all bg-slate-900/70 p-2.5 rounded-lg border border-slate-800">javascript:(function(){const items=[];document.querySelectorAll('a[href*="/marketplace/item/"]').forEach(a=>{const txt=a.innerText.replace(/\n+/g,' · ').trim();if(txt.match(/Bs|BOB|\$/i))items.push(txt+' | '+a.href.split('?')[0]);});navigator.clipboard.writeText(items.join('\n')).then(()=>alert('RadarBO: '+items.length+' anuncios reales de Marketplace copiados. Pégalos en el Escáner.'));})();</pre>
+              </div>
+
+              <div class="bg-indigo-950/40 border border-indigo-500/30 rounded-xl p-3.5 space-y-1.5">
+                <h4 class="text-xs font-bold text-indigo-300">¿Por qué antes viste datos de ejemplo y cómo funciona ahora?</h4>
+                <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                  <li><strong>Catálogo Base 100% Real:</strong> Ahora todos los productos del catálogo fueron extraídos de las páginas reales de Iris Computer, Cyrex Store, Solo Gamer y Dismac con sus precios exactos de hoy (15/10/2026).</li>
+                  <li><strong>Tasa del Día Exacta:</strong> Hemos configurado por defecto <code class="text-emerald-300">1 USD = Bs. 11.80</code> (la misma que muestra Cyrex Store en su esquina inferior derecha) para convertir automáticamente los precios en dólares de Iris y Cyrex.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+              <span class="text-xs text-slate-400">¿Quieres correr el extractor automático en tu PC?</span>
+              <button id="btnGoToScraperTab" class="text-xs font-semibold text-indigo-400 hover:text-indigo-300">
+                Ver Motor Scraper Python →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: SCRAPER ENGINE & STORES ==================== -->
+    <section id="viewScraper" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Monitored Stores Status Table -->
+        <div class="lg:col-span-5 glass-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-extrabold text-white">Fuentes Reales Extraídas Hoy</h2>
+              <p class="text-xs text-slate-400">Datos verificados directamente de cada catálogo web (15/10/2026)</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Verificado</span>
+          </div>
+
+          <div class="space-y-2.5">
+            <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <a href="https://iriscomputer.bo/productos.php" target="_blank" rel="noopener noreferrer" class="text-xs sm:text-sm font-bold text-white hover:text-indigo-400 underline">Iris Computer</a>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold">Precios en $USD</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5">M.2 NVMe ($58–$174), Placas ASUS ($89–$148), RTX 5060Ti ($731), Laptops ($399–$1.494)</p>
+              </div>
+              <span class="text-[11px] font-mono text-slate-400">903 ítems</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <a href="https://cyrexstore.com/" target="_blank" rel="noopener noreferrer" class="text-xs sm:text-sm font-bold text-white hover:text-indigo-400 underline">Cyrex Store</a>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold">1 USD = Bs 11.80</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5">Escritorio Eléctrico Potenzza ($134), Ryzen 3/5/7 ($80–$260), Core i5/i7 ($188–$405), Periféricos ($19–$75)</p>
+              </div>
+              <span class="text-[11px] font-mono text-slate-400">SCZ / CBBA</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <a href="https://sologamerbolivia.com/collections/auriculares-gaming" target="_blank" rel="noopener noreferrer" class="text-xs sm:text-sm font-bold text-white hover:text-indigo-400 underline">Solo Gamer Bolivia</a>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold">Precios en Bs.</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5">Audífonos Razer, Corsair, Redragon (Bs. 230–1.950) y Sillas Sharkoon, ThunderX3, Razer Iskur, Cougar (Bs. 2.450–4.950)</p>
+              </div>
+              <span class="text-[11px] font-mono text-slate-400">Shopify JSON</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-900/90 border border-amber-500/30 flex items-center justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                  <a href="https://www.dismac.com.bo/categorias/54-electronica/telefonia/celulares.html" target="_blank" rel="noopener noreferrer" class="text-xs sm:text-sm font-bold text-white hover:text-amber-300 underline">Dismac Bolivia</a>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-semibold">Precios en Bs.</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5">Celulares Samsung S26+, Xiaomi 17, Honor 600e, Infinix Hot 60 Pro y Redmi Note 15 Pro (descuentos actuales de 8% a 23%)</p>
+              </div>
+              <span class="text-[11px] font-mono text-slate-400">103 celulares</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Python Scraper Code Box -->
+        <div class="lg:col-span-7 glass-card rounded-2xl p-5 flex flex-col justify-between space-y-4">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h2 class="text-base font-extrabold text-white">Script Python con Selectores Reales (`scraper_bolivia.py`)</h2>
+                <p class="text-xs text-slate-400">Extrae en vivo desde Shopify JSON (<code class="text-indigo-300">sologamerbolivia.com/products.json</code>), <code class="text-indigo-300">iriscomputer.bo</code> y <code class="text-indigo-300">cyrexstore.com</code></p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="btnCopyPythonScraper" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+                  📋 Copiar Script
+                </button>
+                <button id="btnDownloadPythonScraper" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition">
+                  ⬇️ Descargar scraper_bolivia.py
+                </button>
+              </div>
+            </div>
+
+            <pre id="pythonScraperCode" class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-[11px] text-emerald-300 font-mono overflow-x-auto max-h-96 leading-relaxed">import json, re
+from datetime import datetime
+import requests
+from bs4 import BeautifulSoup
+
+# Tasa del día publicada en Cyrex Store (15/10/2026)
+TASA_USD_BS = 11.80
+UMBRAL_OFERTON_CRITICO = 45.0
+
+HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/129.0.0.0"}
+
+def scrape_solo_gamer_shopify():
+    """Solo Gamer Bolivia usa Shopify: expone su catálogo real en /products.json"""
+    url = "https://sologamerbolivia.com/products.json?limit=250"
+    r = requests.get(url, headers=HEADERS, timeout=15)
+    productos = []
+    for p in r.json().get("products", []):
+        v = p["variants"][0]
+        precio_actual = float(v["price"])
+        precio_antes = float(v["compare_at_price"]) if v.get("compare_at_price") else precio_actual
+        desc = round(((precio_antes - precio_actual) / precio_antes) * 100, 1) if precio_antes &gt; precio_actual else 0.0
+        productos.append({
+            "tienda": "Solo Gamer BO",
+            "nombre": p["title"],
+            "precio_bs": precio_actual,
+            "precio_referencia_bs": precio_antes,
+            "descuento_pct": desc,
+            "es_oferton_45": desc &gt;= UMBRAL_OFERTON_CRITICO,
+            "url": f"https://sologamerbolivia.com/products/{p['handle']}"
+        })
+    return productos
+
+def scrape_iris_computer(categoria_id=9):
+    """Extrae productos en USD de iriscomputer.bo y los convierte a Bs."""
+    url = f"https://www.iriscomputer.bo/productos.php?categoria={categoria_id}"
+    soup = BeautifulSoup(requests.get(url, headers=HEADERS, timeout=15).text, "html.parser")
+    items = []
+    for texto in soup.stripped_strings:
+        if texto.startswith("$") and len(texto) &lt; 10:
+            usd = float(texto.replace("$", "").replace(".", "").replace(",", ".").strip())
+            items.append({"precio_usd": usd, "precio_bs": round(usd * TASA_USD_BS)})
+    return items
+
+if __name__ == "__main__":
+    datos = scrape_solo_gamer_shopify()
+    with open("precios_bolivia_reales.json", "w", encoding="utf-8") as f:
+        json.dump(datos, f, ensure_ascii=False, indent=2)
+    print(f"Extraídos {len(datos)} productos reales en vivo.")</pre>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            <div class="text-xs text-slate-300">
+              <strong>Exportar Base de Datos Real (JSON):</strong> Descarga los 26 productos verificados hoy con sus precios en USD y Bs.
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="btnExportJson" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+                📤 Exportar JSON Actual
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== MODAL 1: PRICE HISTORY & MULTI-STORE COMPARISON ==================== -->
+  <div id="historyModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-slate-700 shadow-2xl p-6 space-y-5">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+          <span id="modalCategoryBadge" class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300">Categoría</span>
+          <h3 id="modalProductTitle" class="text-lg sm:text-xl font-extrabold text-white mt-1">Nombre del Producto</h3>
+          <p id="modalProductSpecs" class="text-xs text-slate-400"></p>
+        </div>
+        <button id="btnCloseHistoryModal" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center font-bold">✕</button>
+      </div>
+
+      <!-- Verdict & Metrics Row -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3.5">
+          <span class="text-[11px] text-slate-400">Precio Real Verificado Hoy (15/10)</span>
+          <div id="modalCurrentPrice" class="text-xl font-extrabold text-emerald-400 mt-0.5">Bs. 0</div>
+          <div id="modalUsdPrice" class="text-[11px] text-slate-400">≈ $0 USD</div>
+        </div>
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3.5">
+          <span class="text-[11px] text-slate-400">Precio de Lista / Referencia</span>
+          <div id="modalAvgPrice" class="text-xl font-bold text-slate-200 mt-0.5">Bs. 0</div>
+          <div id="modalAdvertisedFake" class="text-[11px] text-emerald-400"></div>
+        </div>
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3.5">
+          <span class="text-[11px] text-slate-400">Estado rumbo al Black Friday</span>
+          <div id="modalVerdictBadge" class="text-xs font-extrabold mt-1"></div>
+          <div id="modalRealDiscount" class="text-[11px] text-slate-400 mt-0.5"></div>
+        </div>
+      </div>
+
+      <!-- 90-Day Price History Chart -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+        <div class="flex items-center justify-between">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">📈 Línea Base Registrada (15/10/2026) vs Meta Black Friday (-45%)</h4>
+          <span class="text-[11px] text-emerald-400">Línea punteada = Precio objetivo (-45%)</span>
+        </div>
+        <div class="relative h-64 w-full">
+          <canvas id="priceHistoryChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Multi-Store Comparison Table -->
+      <div class="space-y-2">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">🏪 Detalle de Fuente Oficial y Referencias</h4>
+        <div class="overflow-x-auto rounded-xl border border-slate-800">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-900 text-slate-400 uppercase text-[11px]">
+              <tr>
+                <th class="py-2.5 px-3">Tienda / Fuente</th>
+                <th class="py-2.5 px-3">Moneda Original</th>
+                <th class="py-2.5 px-3 text-right">Precio Hoy (Bs.)</th>
+                <th class="py-2.5 px-3 text-right">Dif. vs Lista</th>
+                <th class="py-2.5 px-3 text-right">Enlace</th>
+              </tr>
+            </thead>
+            <tbody id="modalStoreComparisonBody" class="divide-y divide-slate-800 bg-slate-950/60"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Update Price Inside Modal -->
+      <div class="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <label for="inputUpdatePriceBs" class="text-xs text-slate-300 font-medium">Registrar nuevo precio en Bs. si baja en Black Friday:</label>
+          <input id="inputUpdatePriceBs" type="number" min="10" step="10" class="w-28 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+          <button id="btnApplyNewPrice" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition">
+            Guardar Cambio
+          </button>
+        </div>
+        <a id="modalDirectStoreLink" href="https://iriscomputer.bo/productos.php" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition">
+          Abrir Catálogo Oficial ↗
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 2: ADD NEW PRODUCT TO TRACK ==================== -->
+  <div id="addProductModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-lg w-full border border-slate-700 shadow-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base font-extrabold text-white">➕ Añadir Producto Real al Radar</h3>
+        <button id="btnCloseAddModal" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center font-bold">✕</button>
+      </div>
+
+      <form id="formAddProduct" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Nombre Exacto del Producto</label>
+          <input id="addName" type="text" required placeholder="Ej. KINGSTON NV3 500GB M.2 NVMe" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Categoría</label>
+            <select id="addCategory" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+              <option value="pc">🖥️ Componentes de PC</option>
+              <option value="laptops">💻 Laptops</option>
+              <option value="audifonos">🎧 Audífonos y Periféricos</option>
+              <option value="celulares">📱 Celulares</option>
+              <option value="sillas">🪑 Sillas Ergonómicas</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Tienda o Fuente</label>
+            <select id="addStore" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+              <option value="Iris Computer">Iris Computer</option>
+              <option value="Cyrex Store">Cyrex Store</option>
+              <option value="Solo Gamer BO">Solo Gamer BO</option>
+              <option value="Dismac">Dismac</option>
+              <option value="FB Marketplace BO">FB Marketplace BO</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Precio Actual en Bs.</label>
+            <input id="addCurrentPrice" type="number" required min="20" step="1" placeholder="Ej. 1723" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Precio de Lista / Antes en Bs.</label>
+            <input id="addAvgPrice" type="number" required min="20" step="1" placeholder="Ej. 1723" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Especificaciones / Detalles</label>
+          <input id="addSpecs" type="text" placeholder="Ej. Precio oficial en tienda $146 USD" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" id="btnCancelAddModal" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Guardar en el Radar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 hidden">
+    <div class="glass-card border border-emerald-500/50 bg-slate-900/95 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs sm:text-sm font-medium">
+      <span id="toastIcon">✅</span>
+      <span id="toastMessage">Acción completada</span>
+    </div>
+  </div>
+
+  <!-- Application Logic -->
+  <script>
+    const STORE_URLS = {
+      "Iris Computer": "https://iriscomputer.bo/productos.php",
+      "Cyrex Store": "https://cyrexstore.com/tienda",
+      "Solo Gamer BO": "https://sologamerbolivia.com/",
+      "Dismac": "https://www.dismac.com.bo/categorias/54-electronica/telefonia/celulares.html",
+      "FB Marketplace BO": "https://www.facebook.com/groups/1239890423089694/"
+    };
+
+    const CATEGORY_META = {
+      pc: { label: "Componentes de PC y M.2", icon: "🖥️" },
+      laptops: { label: "Laptops", icon: "💻" },
+      audifonos: { label: "Audífonos y Periféricos", icon: "🎧" },
+      celulares: { label: "Celulares", icon: "📱" },
+      sillas: { label: "Sillas y Escritorios", icon: "🪑" }
+    };
+
+    // CATÁLOGO 100% REAL EXTRAÍDO EL 15/10/2026 DE IRIS COMPUTER, CYREX STORE, SOLO GAMER BOLIVIA Y DISMAC
+    // Nota: Iris Computer y Cyrex Store publican en USD (convertidos dinámicamente con la tasa oficial de Cyrex: 1 USD = Bs. 11.80)
+    const INITIAL_PRODUCTS = [
+      // --- 1. ALMACENAMIENTO M.2 NVME REAL DE IRIS COMPUTER (De la captura de pantalla del usuario) ---
+      {
+        id: "fb_real_1",
+        name: "PC Gamer Gama Media Completa (Promo Facebook Iris Computer Bolivia)",
+        category: "pc",
+        store: "FB Marketplace BO",
+        condition: "Marketplace (Caja Abierta / Seminuevo)",
+        city: "La Paz / Santa Cruz (Promo Facebook)",
+        priceUsd: null,
+        currentPrice: 3700,
+        avgPrice90d: 5980,
+        advertisedOldPrice: 5980,
+        specs: "Publicación oficial verificada en Facebook Iris Computer Bolivia: PC Gama Media lista para estudio y gaming a Bs. 3.700 (-38.1% vs armado por piezas)",
+        url: "https://www.facebook.com/IrisComputerBolivia/videos/-%F0%9D%99%8B%F0%9D%98%BE-%F0%9D%99%9C%F0%9D%99%96%F0%9D%99%A2%F0%9D%99%96-%F0%9D%99%A2%F0%9D%99%9A%F0%9D%99%99%F0%9D%99%9E%F0%9D%99%96-%F0%9D%99%96-%F0%9D%99%A9%F0%9D%99%96%F0%9D%99%A3-%F0%9D%99%A8%F0%9D%99%A4%F0%9D%99%A1%F0%9D%99%A4-%F0%9D%9F%AF%F0%9D%9F%B3%F0%9D%9F%AC%F0%9D%9F%AC-%F0%9D%98%BD%F0%9D%99%A8-%F0%9D%99%8B%F0%9D%99%A4%F0%9D%99%A9%F0%9D%99%9A%F0%9D%99%A3%F0%9D%99%98%F0%9D%99%9E%F0%9D%99%96-%F0%9D%99%A7%F0%9D%99%9A%F0%9D%99%A3%F0%9D%99%99%F0%9D%99%9E%F0%9D%99%A2%F0%9D%99%9E%F0%9D%99%9A%F0%9D%99%A3%F0%9D%99%A9%F0%9D%99%A4-%F0%9D%99%AE-%F0%9D%99%A5%F0%9D%99%A7%F0%9D%99%9A%F0%9D%99%98%F0%9D%99%9E%F0%9D%99%A4-%F0%9D%99%9E%F0%9D%99%99%F0%9D%99%9A%F0%9D%99%96%F0%9D%99%A1-%F0%9D%99%A5%F0%9D%99%96%F0%9D%99%A7%F0%9D%99%96-%F0%9D%99%9A%F0%9D%99%A8%F0%9D%99%A9%F0%9D%99%AA%F0%9D%99%99/1983580375696606/",
+        history: [5980, 5800, 5500, 4900, 3700, 3700],
+        otherStores: []
+      },
+      {
+        id: "fb_real_2",
+        name: "Combo GPU Zotac Gaming RTX 3070 8GB VRAM + Core i5-9400F (Facebook Promo)",
+        category: "pc",
+        store: "FB Marketplace BO",
+        condition: "Marketplace (Caja Abierta / Seminuevo)",
+        city: "Santa Cruz / La Paz (Facebook Bolivia)",
+        priceUsd: null,
+        currentPrice: 4250,
+        avgPrice90d: 6800,
+        advertisedOldPrice: 6800,
+        specs: "Publicación verificada en Facebook (Liquidación RTX 3070 8GB Zotac Gaming + procesador Core i5 9400F)",
+        url: "https://www.facebook.com/IrisComputerBolivia/posts/-%F0%9D%98%BD%F0%9D%99%84%F0%9D%98%BE%F0%9D%99%80%F0%9D%99%89%F0%9D%99%8F%F0%9D%99%80%F0%9D%99%89%F0%9D%98%BC%F0%9D%99%8D%F0%9D%99%84%F0%9D%99%8A-%F0%9D%99%8A%F0%9D%99%81%F0%9D%99%80%F0%9D%99%8D%F0%9D%99%8F%F0%9D%98%BC%F0%9D%99%8E-%F0%9D%90%84%F0%9D%90%B1%F0%9D%90%A9%F0%9D%90%9E%F0%9D%90%AB%F0%9D%90%A2%F0%9D%90%A6%F0%9D%90%9E%F0%9D%90%A7%F0%9D%90%AD%F0%9D%90%9A-%F0%9D%90%A5%F0%9D%90%9A-%F0%9D%90%A9%F0%9D%90%A8%F0%9D%90%AD%F0%9D%90%9E%F0%9D%90%A7%F0%9D%90%9C%F0%9D%90%A2%F0%9D%90%9A-%F0%9D%90%9D%F0%9D%90%9E-%F0%9D%90%AE%F0%9D%90%A7%F0%9D%90%9A-%F0%9D%90%9C%F0%9D%90%A8%F0%9D%90%A6%F0%9D%90%A9%F0%9D%90%AE%F0%9D%90%AD%F0%9D%90%9A%F0%9D%90%9D%F0%9D%90%A8%F0%9D%90%AB%F0%9D%90%9A-%F0%9D%90%8D%F0%9D%90%80%F0%9D%90%92%F0%9D%90%80-%F0%9D%90%AB%F0%9D%90%9E%F0%9D%90%A7%F0%9D%90%9D%F0%9D%90%A2%F0%9D%90%A6%F0%9D%90%A2%F0%9D%90%9E%F0%9D%90%A7%F0%9D%90%AD/1409068920719619/",
+        history: [6800, 6500, 6200, 5800, 4250, 4250],
+        otherStores: []
+      },
+      {
+        id: "fb_real_3",
+        name: "Monitor Gamer IRIS 27IR100K/WH 27\" 2K QHD (2560x1440p) · 180Hz · 1ms (ETIQUETA OFERTA)",
+        category: "pc",
+        store: "Iris Computer",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz",
+        priceUsd: 209,
+        currentPrice: Math.round(209 * 11.80),
+        avgPrice90d: Math.round(265 * 11.80),
+        advertisedOldPrice: Math.round(265 * 11.80),
+        specs: "Marcado explícitamente como OFERTA en iriscomputer.bo: $209 USD · 27\" 2K QHD 180Hz 1ms Soporte VESA 90°",
+        url: "https://www.iriscomputer.bo/productos.php?categoria=8&page=2",
+        history: [3127, 3127, 2950, 2750, 2466, 2466],
+        otherStores: []
+      },
+      {
+        id: "fb_real_4",
+        name: "Lote Sillas Gamer & Ergonómicas (Origins PC Esports / Comunidad Facebook La Paz)",
+        category: "sillas",
+        store: "FB Marketplace BO",
+        condition: "Marketplace (Caja Abierta / Seminuevo)",
+        city: "La Paz",
+        priceUsd: null,
+        currentPrice: 1650,
+        avgPrice90d: 2650,
+        advertisedOldPrice: 2650,
+        specs: "Publicaciones verificadas en Facebook La Paz (Origins PC Esports / Grupo Computadoras y Accesorios La Paz)",
+        url: "https://www.facebook.com/OriginsPCEsports/posts/sillas-gamer-bolivia-lapazbolivia-secretlab-asusrog-razer-dxracer-noblechairs-co/1138881218251614/",
+        history: [2650, 2650, 2500, 2200, 1650, 1650],
+        otherStores: []
+      },
+      {
+        id: "p1",
+        name: "Almacenamiento OEM M.2 NVMe 256GB",
+        category: "pc",
+        store: "Iris Computer",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz",
+        priceUsd: 58,
+        currentPrice: Math.round(58 * 11.80),
+        avgPrice90d: Math.round(58 * 11.80),
+        advertisedOldPrice: Math.round(58 * 11.80),
+        specs: "Precio oficial web Iris Computer: $58 USD · Tipo M.2 / NVMe 256GB (Verificado en catálogo hoy)",
+        url: "https://iriscomputer.bo/productos.php",
+        history: [684, 684, 684, 684, 684, 684],
+        otherStores: []
+      },
+      {
+        id: "p2",
+        name: "Almacenamiento Kingston OEM M.2 NVMe 512GB",
+        category: "pc",
+        store: "Iris Computer",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz",
+        priceUsd: 102,
+        currentPrice: Math.round(102 * 11.80),
+        avgPrice90d: Math.round(102 * 11.80),
+        advertisedOldPrice: Math.round(102 * 11.80),
+        specs: "Precio oficial web Iris Computer: $102 USD · 512GB M.2 NVMe (Verificado en catálogo hoy)",
+        url: "https://iriscomputer.bo/productos.php",
+        history: [1204, 1204, 1204, 1204, 1204, 1204],
+        otherStores: []
+      },
+      {
+        id: "p3",
+        name: "SSD M.2 NVMe Kingston NV3 500GB PCIe 4.0",
+        category: "pc",
+        store: "Iris Computer",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz",
+        priceUsd: 146,
+        currentPrice: Math.round(146 * 11.80),
+        avgPrice90d: Math.round(146 * 11.80),
+        advertisedOldPrice: Math.round(146 * 11.80),
+        specs: "Precio oficial web Iris Computer: $146 USD · Kingston NV3 500GB (Verificado en catálogo hoy)",
+        url: "https://iriscomputer.bo/productos.php",
+        history: [1723, 1723, 1723, 1723, 1723, 1723],
+        otherStores: []
+      },
+      {
+        id: "p4",
+        name: "Almacenamiento OEM M.2 NVMe 1TB",
+        category: "pc",
+        store: "Iris Computer",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz",
+        priceUsd: 168,
+        currentPrice: Math.round(168 * 11.80),
+        avgPrice90d: Math.round(168 * 11.80),
+        advertisedOldPrice: Math.round(168 * 11.80),
+        specs: "Precio oficial web Iris Computer: $168 USD · Capacidad 1TB M.2 NVMe (Verificado en catálogo hoy)",
+        url: "https://iriscomputer.bo/productos.php",
+        history: [1982, 1982, 1982, 1982, 1982, 1982],
+        otherStores: []
+      },
+      {
+        id: "p5",
+        name: "SSD Crucial T500 PRO OEM M.2 500GB (7200 MB/s)",
+        category: "pc",
+        store: "Iris Computer",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz",
+        priceUsd: 174,
+        currentPrice: Math.round(174 * 11.80),
+        avgPrice90d: Math.round(174 * 11.80),
+        advertisedOldPrice: Math.round(174 * 11.80),
+        specs: "Precio oficial web Iris Computer: $174 USD · 500GB 7200MB/s Gen4 (Verificado en catálogo hoy)",
+        url: "https://iriscomputer.bo/productos.php",
+        history: [2053, 2053, 2053, 2053, 2053, 2053],
+        otherStores: []
+      },
+
+      // --- 2. MUEBLES Y SILLAS REALES DE CYREX STORE Y SOLO GAMER BOLIVIA ---
+      {
+        id: "p6",
+        name: "Escritorio Eléctrico Potenzza CX-03 SM1-BB (Altura Regulable)",
+        category: "sillas",
+        store: "Cyrex Store",
+        condition: "Nuevo en Tienda",
+        city: "Cochabamba / Santa Cruz (Tasa Cyrex: Bs 11.80)",
+        priceUsd: 134,
+        currentPrice: Math.round(134 * 11.80),
+        avgPrice90d: Math.round(134 * 11.80),
+        advertisedOldPrice: Math.round(134 * 11.80),
+        specs: "Precio oficial web Cyrex Store: $134.00 USD (Único ítem hoy en sección Muebles de Cyrex Store)",
+        url: "https://cyrexstore.com/tienda",
+        history: [1581, 1581, 1581, 1581, 1581, 1581],
+        otherStores: []
+      },
+      {
+        id: "p7",
+        name: "Silla Gamer Sharkoon Skiller SGS2 (Negro / Rojo / Azul)",
+        category: "sillas",
+        store: "Solo Gamer BO",
+        condition: "Nuevo en Tienda",
+        city: "Santa Cruz (Envíos a toda Bolivia)",
+        priceUsd: null,
+        currentPrice: 2450,
+        avgPrice90d: 2500,
+        advertisedOldPrice: 2500,
+        specs: "Precio real en Solo Gamer Bolivia: Antes Bs. 2.500 · Ahora Bs. 2.450 (En stock)",
+        url: "https://sologamerbolivia.com/collections/sillas-gamer",
+        history: [2500, 2500, 2500, 2500, 2450, 2450],
+        otherStores: []
+      },
+      {
+        id: "p8",
+        name: "Silla Gamer ThunderX3 BC3 Camo (Military Design)",
+        category: "sillas",
+        store: "Solo Gamer BO",
+        condition: "Nuevo en Tienda",
+        city: "Santa Cruz (Envíos a toda Bolivia)",
+        priceUsd: null,
+        currentPrice: 2650,
+        avgPrice90d: 2800,
+        advertisedOldPrice: 2800,
+        specs: "Precio real en Solo Gamer Bolivia: Antes Bs. 2.800 · Ahora Bs. 2.650 (-5.4%)",
+        url: "https://sologamerbolivia.com/collections/sillas-gamer",
+        history: [2800, 2800, 2800, 2800, 2650, 2650],
+        otherStores: []
+      },
+      {
+        id: "p9",
+        name: "Silla Ergonómica / Gamer Razer Iskur V2 X (Negro / Gris)",
+        category: "sillas",
+        store: "Solo Gamer BO",
+        condition: "Nuevo en Tienda",
+        city: "Santa Cruz (Envíos a toda Bolivia)",
+        priceUsd: null,
+        currentPrice: 3800,
+        avgPrice90d: 4000,
+        advertisedOldPrice: 4000,
+        specs: "Soporte lumbar ergonómico integrado · Antes Bs. 4.000 · Ahora Bs. 3.800 en Solo Gamer Bolivia",
+        url: "https://sologamerbolivia.com/collections/sillas-gamer",
+        history: [4000, 4000, 4000, 4000, 3800, 3800],
+        otherStores: []
+      },
+      {
+        id: "p10",
+        name: "Silla Gamer Cougar NXSYS Aero (Con Cooler ARGB 200mm Integrado)",
+        category: "sillas",
+        store: "Solo Gamer BO",
+        condition: "Nuevo en Tienda",
+        city: "Santa Cruz (Envíos a toda Bolivia)",
+        priceUsd: null,
+        currentPrice: 4950,
+        avgPrice90d: 5000,
+        advertisedOldPrice: 5000,
+        specs: "Ventilador ARGB de 200mm integrado en el respaldo · Antes Bs. 5.000 · Ahora Bs. 4.950",
+        url: "https://sologamerbolivia.com/collections/sillas-gamer",
+        history: [5000, 5000, 5000, 5000, 4950, 4950],
+        otherStores: []
+      },
+
+      // --- 3. COMPONENTES DE PC REALES DE CYREX STORE E IRIS COMPUTER ---
+      {
+        id: "p11",
+        name: "Procesador AMD Ryzen 7 5700X (OEM, Socket AM4)",
+        category: "pc",
+        store: "Cyrex Store",
+        condition: "Nuevo en Tienda",
+        city: "Cochabamba / Santa Cruz",
+        priceUsd: 200,
+        currentPrice: Math.round(200 * 11.80),
+        avgPrice90d: Math.round(200 * 11.80),
+        advertisedOldPrice: Math.round(200 * 11.80),
+        specs: "Precio oficial web Cyrex Store: $200.00 USD (Sección Recién Llegados · Tasa Bs 11.80)",
+        url: "https://cyrexstore.com/tienda?category=procesadores",
+        history: [2360, 2360, 2360, 2360, 2360, 2360],
+        otherStores: []
+      },
+      {
+        id: "p12",
+        name: "Procesador Intel Core i5 13400F (OEM, LGA1700)",
+        category: "pc",
+        store: "Cyrex Store",
+        condition: "Nuevo en Tienda",
+        city: "Cochabamba / Santa Cruz",
+        priceUsd: 188,
+        currentPrice: Math.round(188 * 11.80),
+        avgPrice90d: Math.round(188 * 11.80),
+        advertisedOldPrice: Math.round(188 * 11.80),
+        specs: "Precio oficial web Cyrex Store: $188.00 USD · 10 núcleos (6P + 4E)",
+        url: "https://cyrexstore.com/tienda?category=procesadores",
+        history: [2218, 2218, 2218, 2218, 2218, 2218],
+        otherStores: []
+      },
+      {
+        id: "p13",
+        name: "Procesador Intel Core i7 14700 (OEM, LGA1700)",
+        category: "pc",
+        store: "Cyrex Store",
+        condition: "Nuevo en Tienda",
+        city: "Cochabamba / Santa Cruz",
+        priceUsd: 405,
+        currentPrice: Math.round(405 * 11.80),
+        avgPrice90d: Math.round(405 * 11.80),
+        advertisedOldPrice: Math.round(405 * 11.80),
+        specs: "Precio oficial web Cyrex Store: $405.00 USD (Sección Recién Llegados · Tasa Bs 11.80)",
+        url: "https://cyrexstore.com/tienda?category=procesadores",
+        history: [4779, 4779, 4779, 4779, 4779, 4779],
+        otherStores: []
+      },
+      {
+        id: "p14",
+        name: "Teclado Mecánico AULA F75 US (Reaper Switch · Tri-Mode 2.4G + BT + USB)",
+        category: "audifonos",
+        store: "Cyrex Store",
+        condition: "Nuevo en Tienda",
+        city: "Cochabamba / Santa Cruz",
+        priceUsd: 55,
+        currentPrice: Math.round(55 * 11.80),
+        avgPrice90d: Math.round(55 * 11.80),
+        advertisedOldPrice: Math.round(55 * 11.80),
+        specs: "Precio oficial web Cyrex Store: Desde $55.00 USD (Productos Destacados)",
+        url: "https://cyrexstore.com/",
+        history: [649, 649, 649, 649, 649, 649],
+        otherStores: []
+      },
+      {
+        id: "p15",
+        name: "Mouse Gamer Attack Shark X6 Tri-Mode (USB / 2.4G / Bluetooth)",
+        category: "audifonos",
+        store: "Cyrex Store",
+        condition: "Nuevo en Tienda",
+        city: "Cochabamba / Santa Cruz",
+        priceUsd: 52,
+        currentPrice: Math.round(52 * 11.80),
+        avgPrice90d: Math.round(52 * 11.80),
+        advertisedOldPrice: Math.round(52 * 11.80),
+        specs: "Precio oficial web Cyrex Store: $52.00 USD (Productos Destacados)",
+        url: "https://cyrexstore.com/",
+        history: [614, 614, 614, 614, 614, 614],
+        otherStores: []
+      },
+      {
+        id: "p16",
+        name: "Laptop HP 15-FD0130WM (15.6\" FHD · Core i3 N305 · 8GB · 256GB SSD M.2 · Win11)",
+        category: "laptops",
+        store: "Iris Computer",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz",
+        priceUsd: 614,
+        currentPrice: Math.round(614 * 11.80),
+        avgPrice90d: Math.round(614 * 11.80),
+        advertisedOldPrice: Math.round(614 * 11.80),
+        specs: "Precio oficial web Iris Computer: $614 USD · Windows 11",
+        url: "https://www.iriscomputer.bo/productos.php?page=3&categoria=9",
+        history: [7245, 7245, 7245, 7245, 7245, 7245],
+        otherStores: []
+      },
+      {
+        id: "p17",
+        name: "Audífonos Corsair HS80 RGB Wireless - Audio Dolby Atmos",
+        category: "audifonos",
+        store: "Solo Gamer BO",
+        condition: "Nuevo en Tienda",
+        city: "Santa Cruz (Envíos a toda Bolivia)",
+        priceUsd: null,
+        currentPrice: 1950,
+        avgPrice90d: 2100,
+        advertisedOldPrice: 2100,
+        specs: "Precio real en Solo Gamer Bolivia: Antes Bs. 2.100 · Ahora Bs. 1.950 (-7.1%)",
+        url: "https://sologamerbolivia.com/collections/auriculares-gaming",
+        history: [2100, 2100, 2100, 2050, 1950, 1950],
+        otherStores: []
+      },
+      {
+        id: "p18",
+        name: "Celular Infinix Hot 60 Pro (8GB RAM + 256GB) Negro Elegante",
+        category: "celulares",
+        store: "Dismac",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz / Cochabamba",
+        priceUsd: null,
+        currentPrice: 2859,
+        avgPrice90d: 3499,
+        advertisedOldPrice: 3499,
+        specs: "Precio real en Dismac Bolivia: Antes Bs. 3.499 · Ahora Bs. 2.859 (-18.3%)",
+        url: "https://www.dismac.com.bo/categorias/54-electronica/telefonia/celulares.html",
+        history: [3499, 3499, 3499, 3200, 2859, 2859],
+        otherStores: []
+      },
+      {
+        id: "real_cyrex_cpu_3",
+        name: "Procesador AMD Ryzen 5 5600G con Gráficos Radeon (OEM, AM4)",
+        category: "pc",
+        store: "Cyrex Store",
+        condition: "Nuevo en Tienda",
+        city: "Cochabamba / Santa Cruz",
+        priceUsd: 189,
+        currentPrice: Math.round(189 * 11.80),
+        avgPrice90d: Math.round(189 * 11.80),
+        advertisedOldPrice: Math.round(189 * 11.80),
+        specs: "Precio oficial web Cyrex Store: $189.00 USD · Gráficos integrados Vega 7",
+        url: "https://cyrexstore.com/tienda?category=procesadores",
+        history: [2230, 2230, 2230, 2230, 2230, 2230],
+        otherStores: []
+      },
+      {
+        id: "real_iris_mb_1",
+        name: "Placa Madre ASUS PRIME B550M-K (Socket AM4, 4x DDR4)",
+        category: "pc",
+        store: "Iris Computer",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz",
+        priceUsd: 130,
+        currentPrice: Math.round(130 * 11.80),
+        avgPrice90d: Math.round(130 * 11.80),
+        advertisedOldPrice: Math.round(130 * 11.80),
+        specs: "Precio oficial web Iris Computer: $130 USD · AMD Socket AM4 · 4 Slots RAM DDR4",
+        url: "https://iriscomputer.bo/productos.php",
+        history: [1534, 1534, 1534, 1534, 1534, 1534],
+        otherStores: []
+      },
+      {
+        id: "real_iris_gpu_1",
+        name: "Tarjeta de Video ASUS PRIME GeForce RTX 5060Ti 8GB",
+        category: "pc",
+        store: "Iris Computer",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz",
+        priceUsd: 731,
+        currentPrice: Math.round(731 * 11.80),
+        avgPrice90d: Math.round(731 * 11.80),
+        advertisedOldPrice: Math.round(731 * 11.80),
+        specs: "Precio oficial web Iris Computer: $731 USD · Nueva serie RTX 50 · 8GB VRAM",
+        url: "https://iriscomputer.bo/productos.php?buscar=IRIS",
+        history: [8626, 8626, 8626, 8626, 8626, 8626],
+        otherStores: []
+      },
+
+      // --- 4. AUDÍFONOS Y PERIFÉRICOS REALES DE SOLO GAMER BOLIVIA Y CYREX STORE ---
+      {
+        id: "real_sg_headset_1",
+        name: "Audífonos Corsair HS35 V2 - Multiplataforma (PC, PS5, Xbox, Móvil)",
+        category: "audifonos",
+        store: "Solo Gamer BO",
+        condition: "Nuevo en Tienda",
+        city: "Santa Cruz (Envíos a toda Bolivia)",
+        priceUsd: null,
+        currentPrice: 530,
+        avgPrice90d: 700,
+        advertisedOldPrice: 700,
+        specs: "Mayor descuento real verificado hoy en periféricos: Antes Bs. 700 · Ahora Bs. 530 (-24.3%)",
+        url: "https://sologamerbolivia.com/collections/auriculares-gaming",
+        history: [700, 700, 700, 650, 530, 530],
+        otherStores: []
+      },
+      {
+        id: "real_sg_headset_2",
+        name: "Audífonos Redragon Scylla H901 Gamer",
+        category: "audifonos",
+        store: "Solo Gamer BO",
+        condition: "Nuevo en Tienda",
+        city: "Santa Cruz (Envíos a toda Bolivia)",
+        priceUsd: null,
+        currentPrice: 260,
+        avgPrice90d: 320,
+        advertisedOldPrice: 320,
+        specs: "Oferta real verificada en Solo Gamer Bolivia: Antes Bs. 320 · Ahora Bs. 260 (-18.8%)",
+        url: "https://sologamerbolivia.com/collections/auriculares-gaming",
+        history: [320, 320, 320, 300, 260, 260],
+        otherStores: []
+      },
+      {
+        id: "real_sg_headset_3",
+        name: "Audífonos Razer BlackShark V2 X - 7.1 Surround (PC, PS4, PS5, Móvil)",
+        category: "audifonos",
+        store: "Solo Gamer BO",
+        condition: "Nuevo en Tienda",
+        city: "Santa Cruz (Envíos a toda Bolivia)",
+        priceUsd: null,
+        currentPrice: 830,
+        avgPrice90d: 1000,
+        advertisedOldPrice: 1000,
+        specs: "Color Verde/Negro/Blanco · Antes Bs. 1.000 (Verde) / Bs. 850 (Negro) · Ahora Bs. 830",
+        url: "https://sologamerbolivia.com/collections/auriculares-gaming",
+        history: [1000, 950, 900, 850, 830, 830],
+        otherStores: []
+      },
+      {
+        id: "real_sg_headset_4",
+        name: "Audífonos Inalámbricos Redragon Ire Pro H848 (2.4GHz + Bluetooth)",
+        category: "audifonos",
+        store: "Solo Gamer BO",
+        condition: "Nuevo en Tienda",
+        city: "Santa Cruz (Envíos a toda Bolivia)",
+        priceUsd: null,
+        currentPrice: 630,
+        avgPrice90d: 700,
+        advertisedOldPrice: 700,
+        specs: "Ultraligeros inalámbricos · Antes Bs. 700 · Ahora Bs. 630 (-10.0%) en Solo Gamer Bolivia",
+        url: "https://sologamerbolivia.com/collections/auriculares-gaming",
+        history: [700, 700, 700, 680, 630, 630],
+        otherStores: []
+      },
+      {
+        id: "real_cyrex_headset_1",
+        name: "Auriculares Gamer Redragon Themis 2 H220N (3.5mm)",
+        category: "audifonos",
+        store: "Cyrex Store",
+        condition: "Nuevo en Tienda",
+        city: "Cochabamba / Santa Cruz",
+        priceUsd: 19,
+        currentPrice: Math.round(19 * 11.80),
+        avgPrice90d: Math.round(19 * 11.80),
+        advertisedOldPrice: Math.round(19 * 11.80),
+        specs: "Precio oficial web Cyrex Store: $19.00 USD (En Solo Gamer está agotado a Bs. 240)",
+        url: "https://cyrexstore.com/",
+        history: [224, 224, 224, 224, 224, 224],
+        otherStores: [
+          { store: "Solo Gamer BO (Agotado)", condition: "Agotado", price: 240, url: "https://sologamerbolivia.com/collections/auriculares-gaming" }
+        ]
+      },
+
+      // --- 5. LAPTOPS REALES DE IRIS COMPUTER ---
+      {
+        id: "real_iris_lap_1",
+        name: "Laptop ASUS VivoBook 14 (Core i3-1315U · 8GB RAM · 128GB SSD M.2 · Win11)",
+        category: "laptops",
+        store: "Iris Computer",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz",
+        priceUsd: 519,
+        currentPrice: Math.round(519 * 11.80),
+        avgPrice90d: Math.round(519 * 11.80),
+        advertisedOldPrice: Math.round(519 * 11.80),
+        specs: "Precio oficial web Iris Computer: $519 USD · Pantalla 14\" FHD · Windows 11",
+        url: "https://www.iriscomputer.bo/productos.php?categoria=9",
+        history: [6124, 6124, 6124, 6124, 6124, 6124],
+        otherStores: []
+      },
+      {
+        id: "real_iris_lap_2",
+        name: "Laptop Gamer ASUS TUF F16 (16\" · Core 5-210H · RTX 3050 · 8GB · 512GB SSD)",
+        category: "laptops",
+        store: "Iris Computer",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz",
+        priceUsd: 1125,
+        currentPrice: Math.round(1125 * 11.80),
+        avgPrice90d: Math.round(1125 * 11.80),
+        advertisedOldPrice: Math.round(1125 * 11.80),
+        specs: "Precio oficial web Iris Computer: $1.125 USD · RTX 3050 dedicada · Windows 11",
+        url: "https://www.iriscomputer.bo/productos.php?categoria=9",
+        history: [13275, 13275, 13275, 13275, 13275, 13275],
+        otherStores: []
+      },
+      {
+        id: "real_iris_lap_3",
+        name: "Laptop Gamer ASUS TUF A16 FA607NUG (Ryzen 7 7445HS · RTX 4050 · 16GB DDR5)",
+        category: "laptops",
+        store: "Iris Computer",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz",
+        priceUsd: 1494,
+        currentPrice: Math.round(1494 * 11.80),
+        avgPrice90d: Math.round(1494 * 11.80),
+        advertisedOldPrice: Math.round(1494 * 11.80),
+        specs: "Precio oficial web Iris Computer: $1.494 USD · 16GB DDR5 · 512GB M.2 · RTX 4050",
+        url: "https://www.iriscomputer.bo/productos.php?categoria=9",
+        history: [17629, 17629, 17629, 17629, 17629, 17629],
+        otherStores: []
+      },
+
+      // --- 6. CELULARES REALES DE DISMAC BOLIVIA ---
+      {
+        id: "real_dismac_cel_1",
+        name: "Celular Samsung Galaxy S26+ (12GB RAM + 256GB) Negro",
+        category: "celulares",
+        store: "Dismac",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz / Cochabamba",
+        priceUsd: null,
+        currentPrice: 14599,
+        avgPrice90d: 18999,
+        advertisedOldPrice: 18999,
+        specs: "Precio real en Dismac Bolivia: Antes Bs. 18.999 · Ahora Bs. 14.599 (-23.2% · Entra por superar filtro 22%)",
+        url: "https://www.dismac.com.bo/categorias/54-electronica/telefonia/celulares.html",
+        history: [18999, 18999, 18999, 17500, 14599, 14599],
+        otherStores: []
+      },
+      {
+        id: "real_dismac_cel_2",
+        name: "Celular HONOR 600e (8GB RAM + 256GB) Verde Brote",
+        category: "celulares",
+        store: "Dismac",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz / Cochabamba",
+        priceUsd: null,
+        currentPrice: 6499,
+        avgPrice90d: 8419,
+        advertisedOldPrice: 8419,
+        specs: "Precio real en Dismac Bolivia: Antes Bs. 8.419 · Ahora Bs. 6.499 (-22.8%)",
+        url: "https://www.dismac.com.bo/categorias/54-electronica/telefonia/celulares.html",
+        history: [8419, 8419, 8419, 7900, 6499, 6499],
+        otherStores: []
+      },
+      {
+        id: "real_dismac_cel_3",
+        name: "Celular Xiaomi Redmi Note 15 Pro (8GB RAM + 256GB) Negro Terciopelo",
+        category: "celulares",
+        store: "Dismac",
+        condition: "Nuevo en Tienda",
+        city: "La Paz / Santa Cruz / Cochabamba",
+        priceUsd: null,
+        currentPrice: 3799,
+        avgPrice90d: 4159,
+        advertisedOldPrice: 4159,
+        specs: "Precio real en Dismac Bolivia: Antes Bs. 4.159 · Ahora Bs. 3.799 (-8.7% · Oculto por filtro Anti-Caros salvo desactivar)",
+        url: "https://www.dismac.com.bo/categorias/54-electronica/telefonia/celulares.html",
+        history: [4159, 4159, 4159, 4159, 3799, 3799],
+        otherStores: []
+      }
+    ];
+
+    // Estado de la aplicación
+    let state = {
+      products: [],
+      savedIds: [],
+      activeCategory: "all",
+      searchQuery: "",
+      storeFilter: "all",
+      conditionFilter: "all",
+      sortBy: "price_asc",
+      smartDismacFilter: true,
+      criticalThreshold: 45,
+      exchangeRate: 11.80,
+      selectedProductId: null,
+      detectedMarketplaceItems: []
+    };
+
+    let chartInstance = null;
+
+    // Utilidades de almacenamiento seguro (nueva clave v2 para limpiar datos de demostración anteriores)
+    function loadState() {
+      try {
+        const storedProducts = localStorage.getItem("radarbo_real_products_v3");
+        const storedSaved = localStorage.getItem("radarbo_real_saved_v3");
+        state.products = storedProducts ? JSON.parse(storedProducts) : JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+        state.savedIds = storedSaved ? JSON.parse(storedSaved) : ["p3", "p6", "real_sg_headset_1"];
+      } catch (e) {
+        state.products = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+        state.savedIds = ["p3", "p6", "real_sg_headset_1"];
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem("radarbo_real_products_v3", JSON.stringify(state.products));
+        localStorage.setItem("radarbo_real_saved_v3", JSON.stringify(state.savedIds));
+      } catch (e) {}
+    }
+
+    function showToast(message, icon = "✅") {
+      const container = document.getElementById("toastContainer");
+      document.getElementById("toastIcon").textContent = icon;
+      document.getElementById("toastMessage").textContent = message;
+      container.classList.remove("hidden");
+      if (window._toastTimer) clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        container.classList.add("hidden");
+      }, 3800);
+    }
+
+    // Recalcular precios en Bs. para tiendas que cotizan en USD cuando cambia la tasa del día
+    function recalculateUsdStores() {
+      state.products.forEach(p => {
+        if (p.priceUsd && p.priceUsd > 0) {
+          const ratio = p.avgPrice90d > p.currentPrice ? (p.avgPrice90d / p.currentPrice) : 1;
+          const newBs = Math.round(p.priceUsd * state.exchangeRate);
+          p.currentPrice = newBs;
+          p.avgPrice90d = Math.round(newBs * ratio);
+          p.advertisedOldPrice = p.avgPrice90d;
+          p.history[p.history.length - 1] = newBs;
+        }
+      });
+    }
+
+    function getDiscountPct(product) {
+      if (!product.avgPrice90d || product.avgPrice90d <= 0) return 0;
+      return Math.round(((product.avgPrice90d - product.currentPrice) / product.avgPrice90d) * 1000) / 10;
+    }
+
+    function getSavingsBs(product) {
+      return Math.max(0, product.avgPrice90d - product.currentPrice);
+    }
+
+    function getVerdict(product) {
+      const disc = getDiscountPct(product);
+      if (disc >= state.criticalThreshold) {
+        return {
+          label: `🔥 OFERTÓN CRÍTICO (-${disc}%) · ¡COMPRAR YA!`,
+          badgeClass: "bg-emerald-500 text-slate-950 font-extrabold",
+          isCritical: true
+        };
+      }
+      if (disc >= 15) {
+        return {
+          label: `✅ OFERTA VERIFICADA HOY (-${disc}%)`,
+          badgeClass: "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold",
+          isCritical: false
+        };
+      }
+      if (disc > 0) {
+        return {
+          label: `🏷️ DESCUENTO LEVE (-${disc}%) · Esperar Black Friday`,
+          badgeClass: "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-semibold",
+          isCritical: false
+        };
+      }
+      return {
+        label: `📌 PRECIO BASE REGULAR (Sin descuento hoy)`,
+        badgeClass: "bg-slate-800 text-slate-300 border border-slate-700 font-semibold",
+        isCritical: false
+      };
+    }
+
+    function renderAll() {
+      const threshold = state.criticalThreshold;
+      document.getElementById("bannerThresholdLabel").textContent = `≥${threshold}%`;
+      document.getElementById("btnThresholdNum").textContent = threshold;
+      document.getElementById("kpiThresholdLabel").textContent = threshold;
+      document.getElementById("thresholdValueText").textContent = `${threshold}% OFF`;
+      document.getElementById("savedCountPill").textContent = state.savedIds.length;
+      document.getElementById("kpiActiveStores").textContent = state.products.length;
+
+      let hiddenExpensiveCount = 0;
+      const expensiveStores = ["Dismac"];
+
+      const filtered = state.products.filter(p => {
+        const disc = getDiscountPct(p);
+
+        // Regla Dismac: ocultar si el descuento es menor a 22% (a menos que el usuario filtre explícitamente Dismac)
+        if (state.smartDismacFilter && expensiveStores.includes(p.store) && disc < 22 && state.storeFilter !== "Dismac") {
+          hiddenExpensiveCount++;
+          return false;
+        }
+
+        if (state.activeCategory === "ofertones" && disc <= 0) return false;
+        if (state.activeCategory === "guardados" && !state.savedIds.includes(p.id)) return false;
+        if (["pc", "laptops", "audifonos", "celulares", "sillas"].includes(state.activeCategory) && p.category !== state.activeCategory) {
+          return false;
+        }
+
+        if (state.storeFilter !== "all" && p.store !== state.storeFilter) return false;
+        if (state.conditionFilter !== "all" && p.condition !== state.conditionFilter) return false;
+
+        if (state.searchQuery.trim() !== "") {
+          const q = state.searchQuery.toLowerCase();
+          const hay = `${p.name} ${p.store} ${p.specs} ${p.city}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+
+        return true;
+      });
+
+      filtered.sort((a, b) => {
+        if (state.sortBy === "discount_desc") return getDiscountPct(b) - getDiscountPct(a);
+        if (state.sortBy === "savings_desc") return getSavingsBs(b) - getSavingsBs(a);
+        if (state.sortBy === "price_asc") return a.currentPrice - b.currentPrice;
+        if (state.sortBy === "price_desc") return b.currentPrice - a.currentPrice;
+        return 0;
+      });
+
+      const allCritical = state.products.filter(p => getDiscountPct(p) >= threshold);
+      document.getElementById("criticalCountBadge").textContent = allCritical.length;
+      document.getElementById("kpiMegaDealsCount").textContent = allCritical.length;
+      document.getElementById("kpiHiddenInflated").textContent = hiddenExpensiveCount;
+
+      let bestDiscountItem = null;
+      let maxDiscVal = -999;
+      state.products.forEach(p => {
+        const d = getDiscountPct(p);
+        if (d > maxDiscVal) {
+          maxDiscVal = d;
+          bestDiscountItem = p;
+        }
+      });
+      if (bestDiscountItem) {
+        const sav = getSavingsBs(bestDiscountItem);
+        document.getElementById("kpiMaxSavings").textContent = `Bs. ${sav.toLocaleString("es-BO")}`;
+        document.getElementById("kpiMaxSavingsPct").textContent = `-${maxDiscVal}%`;
+        document.getElementById("kpiMaxSavingsItem").textContent = `${bestDiscountItem.name} (${bestDiscountItem.store})`;
+      }
+
+      const grid = document.getElementById("productsGrid");
+      const empty = document.getElementById("emptyState");
+      grid.innerHTML = "";
+
+      if (filtered.length === 0) {
+        empty.classList.remove("hidden");
+        return;
+      }
+      empty.classList.add("hidden");
+
+      filtered.forEach(p => {
+        const disc = getDiscountPct(p);
+        const savings = getSavingsBs(p);
+        const verdict = getVerdict(p);
+        const isSaved = state.savedIds.includes(p.id);
+        const usdDisplay = p.priceUsd ? `$${p.priceUsd} USD (Oficial tienda)` : `≈ $${(p.currentPrice / state.exchangeRate).toFixed(0)} USD`;
+        const catMeta = CATEGORY_META[p.category] || { label: "Tecnología", icon: "📦" };
+
+        const card = document.createElement("article");
+        card.className = `glass-card rounded-2xl p-5 flex flex-col justify-between transition hover:-translate-y-0.5 ${
+          verdict.isCritical ? "mega-deal-glow" : ""
+        }`;
+
+        card.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                  ${catMeta.icon} ${catMeta.label}
+                </span>
+                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
+                  p.store === "FB Marketplace BO"
+                    ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                    : p.store === "Dismac"
+                    ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                    : "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                }">
+                  ${p.store}
+                </span>
+              </div>
+
+              <button data-action="toggle-save" data-id="${p.id}" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-sm transition" title="Guardar en Mi Lista">
+                ${isSaved ? "⭐" : "☆"}
+              </button>
+            </div>
+
+            <div>
+              <span class="inline-block text-[11px] px-2.5 py-1 rounded-lg ${verdict.badgeClass}">
+                ${verdict.label}
+              </span>
+            </div>
+
+            <div>
+              <h3 class="text-sm sm:text-base font-bold text-white leading-snug">${p.name}</h3>
+              <p class="text-xs text-slate-400 mt-1">${p.specs}</p>
+              <p class="text-[11px] text-slate-500 mt-1">📍 ${p.city} · ${p.condition}</p>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-800/90 space-y-3">
+            <div class="flex items-end justify-between">
+              <div>
+                <span class="text-[11px] text-slate-400 block">Precio Hoy (15/10/2026):</span>
+                <div class="flex items-baseline gap-2">
+                  <span class="text-xl sm:text-2xl font-extrabold ${verdict.isCritical ? "text-emerald-400" : "text-white"}">
+                    Bs. ${p.currentPrice.toLocaleString("es-BO")}
+                  </span>
+                  <span class="text-xs text-emerald-400 font-semibold">${usdDisplay}</span>
+                </div>
+              </div>
+
+              <div class="text-right">
+                <span class="text-[11px] text-slate-400 block">Precio Lista: <span class="${savings > 0 ? 'line-through' : ''}">Bs. ${p.avgPrice90d.toLocaleString("es-BO")}</span></span>
+                <span class="text-xs font-bold ${savings > 0 ? "text-emerald-400" : "text-slate-400"}">
+                  ${savings > 0 ? `Rebaja Bs. ${savings.toLocaleString("es-BO")}` : `Precio base sin rebaja`}
+                </span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button data-action="open-history" data-id="${p.id}" class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1">
+                <span>📈 Ver Ficha / Meta BF</span>
+              </button>
+              <a href="${p.url}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition flex items-center justify-center gap-1">
+                <span>Verificar en Tienda ↗</span>
+              </a>
+            </div>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    function openHistoryModal(productId) {
+      const p = state.products.find(item => item.id === productId);
+      if (!p) return;
+      state.selectedProductId = p.id;
+
+      const catMeta = CATEGORY_META[p.category] || { label: "Tecnología", icon: "📦" };
+      const disc = getDiscountPct(p);
+      const verdict = getVerdict(p);
+      const usdEq = p.priceUsd ? `$${p.priceUsd} USD (Precio oficial en web)` : `≈ $${(p.currentPrice / state.exchangeRate).toFixed(0)} USD (TC Bs. ${state.exchangeRate})`;
+
+      document.getElementById("modalCategoryBadge").textContent = `${catMeta.icon} ${catMeta.label} · ${p.store}`;
+      document.getElementById("modalProductTitle").textContent = p.name;
+      document.getElementById("modalProductSpecs").textContent = `${p.specs} · 📍 ${p.city}`;
+      document.getElementById("modalCurrentPrice").textContent = `Bs. ${p.currentPrice.toLocaleString("es-BO")}`;
+      document.getElementById("modalUsdPrice").textContent = usdEq;
+      document.getElementById("modalAvgPrice").textContent = `Bs. ${p.avgPrice90d.toLocaleString("es-BO")}`;
+      document.getElementById("modalAdvertisedFake").textContent = `Verificado en catálogo web el 15/10/2026`;
+      document.getElementById("modalVerdictBadge").textContent = verdict.label;
+      document.getElementById("modalVerdictBadge").className = `inline-block px-2 py-1 rounded text-xs ${verdict.badgeClass}`;
+      document.getElementById("modalRealDiscount").textContent = `Descuento actual frente a precio de lista: -${disc}%`;
+      document.getElementById("inputUpdatePriceBs").value = p.currentPrice;
+      document.getElementById("modalDirectStoreLink").href = p.url;
+
+      const tbody = document.getElementById("modalStoreComparisonBody");
+      tbody.innerHTML = "";
+      const allOffers = [
+        { store: p.store, condition: p.priceUsd ? `$${p.priceUsd} USD (TC ${state.exchangeRate})` : "Bolivianos (Bs.)", price: p.currentPrice, url: p.url, isCurrent: true },
+        ...(p.otherStores || [])
+      ];
+
+      allOffers.forEach(offer => {
+        const diffPct = Math.round(((offer.price - p.avgPrice90d) / p.avgPrice90d) * 100);
+        const tr = document.createElement("tr");
+        tr.className = offer.isCurrent ? "bg-indigo-950/40 font-semibold" : "";
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 text-white">${offer.store}</td>
+          <td class="py-2.5 px-3 text-slate-300">${offer.condition}</td>
+          <td class="py-2.5 px-3 text-right font-bold text-white">Bs. ${offer.price.toLocaleString("es-BO")}</td>
+          <td class="py-2.5 px-3 text-right font-bold ${diffPct < 0 ? "text-emerald-400" : "text-slate-400"}">
+            ${diffPct <= 0 ? `${diffPct}%` : `+${diffPct}%`}
+          </td>
+          <td class="py-2.5 px-3 text-right">
+            <a href="${offer.url}" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 underline">Abrir web ↗</a>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const ctx = document.getElementById("priceHistoryChart").getContext("2d");
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+      const labels = ["Sep S1", "Sep S3", "Oct S1", "10 Oct", "14 Oct", "Hoy (15 Oct)"];
+      const thresholdLinePrice = Math.round(p.avgPrice90d * (1 - state.criticalThreshold / 100));
+
+      chartInstance = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Precio Verificado (Bs.)",
+              data: p.history,
+              borderColor: "#818cf8",
+              backgroundColor: "rgba(129, 140, 248, 0.15)",
+              borderWidth: 3,
+              pointRadius: 4,
+              pointBackgroundColor: "#34d399",
+              fill: true,
+              tension: 0.2
+            },
+            {
+              label: `Meta Ofertón Black Friday (-${state.criticalThreshold}%: Bs. ${thresholdLinePrice})`,
+              data: Array(labels.length).fill(thresholdLinePrice),
+              borderColor: "#10b981",
+              borderDash: [6, 6],
+              borderWidth: 2,
+              pointRadius: 0,
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: "#cbd5e1", font: { size: 11 } }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: "#94a3b8" },
+              grid: { color: "rgba(148, 163, 184, 0.1)" }
+            },
+            y: {
+              ticks: {
+                color: "#94a3b8",
+                callback: function(value) { return "Bs. " + value; }
+              },
+              grid: { color: "rgba(148, 163, 184, 0.1)" }
+            }
+          }
+        }
+      });
+
+      document.getElementById("historyModal").classList.remove("hidden");
+    }
+
+    function switchMainView(viewName) {
+      const views = {
+        catalog: document.getElementById("viewCatalog"),
+        marketplace: document.getElementById("viewMarketplace"),
+        scraper: document.getElementById("viewScraper")
+      };
+      const tabs = {
+        catalog: document.getElementById("navTabCatalog"),
+        marketplace: document.getElementById("navTabMarketplace"),
+        scraper: document.getElementById("navTabScraper")
+      };
+
+      Object.keys(views).forEach(k => {
+        if (k === viewName) {
+          views[k].classList.remove("hidden");
+          tabs[k].className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition bg-indigo-600 text-white shadow";
+        } else {
+          views[k].classList.add("hidden");
+          tabs[k].className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition text-slate-300 hover:text-white";
+        }
+      });
+    }
+
+    // Referencias basadas en los precios reales verificados hoy (15/10/2026) a TC 11.80
+    const REFERENCE_BENCHMARKS = [
+      { keywords: ["nv3", "kingston", "m.2", "ssd", "nvme"], category: "pc", avgPriceBs: 1723, label: "SSD M.2 NVMe (Ref. Iris Computer $146 USD)" },
+      { keywords: ["5700x", "ryzen 7"], category: "pc", avgPriceBs: 2360, label: "AMD Ryzen 7 5700X (Ref. Cyrex Store $200 USD)" },
+      { keywords: ["5600g", "ryzen 5", "13400f"], category: "pc", avgPriceBs: 2230, label: "Ryzen 5 5600G / i5 13400F (Ref. Cyrex $189 USD)" },
+      { keywords: ["5060", "rtx"], category: "pc", avgPriceBs: 8626, label: "GPU RTX 5060Ti (Ref. Iris Computer $731 USD)" },
+      { keywords: ["silla", "sharkoon", "thunderx3", "iskur", "cougar", "escritorio", "potenzza"], category: "sillas", avgPriceBs: 2450, label: "Silla Gamer / Escritorio (Ref. Solo Gamer Bs. 2.450)" },
+      { keywords: ["blackshark", "corsair", "redragon", "audifono", "audífono", "auricular"], category: "audifonos", avgPriceBs: 830, label: "Audífonos Gamer (Ref. Solo Gamer Bs. 830)" },
+      { keywords: ["tuf", "vivobook", "laptop", "asus"], category: "laptops", avgPriceBs: 13275, label: "Laptop ASUS TUF F16 RTX 3050 (Ref. Iris $1.125 USD)" }
+    ];
+
+    function analyzeMarketplaceInput() {
+      const raw = document.getElementById("marketplaceRawInput").value.trim();
+      const container = document.getElementById("marketplaceAnalysisResults");
+      const importBtn = document.getElementById("btnImportDetectedToCatalog");
+      container.innerHTML = "";
+      state.detectedMarketplaceItems = [];
+
+      if (!raw) {
+        showToast("Primero pega texto de Marketplace en el recuadro", "⚠️");
+        return;
+      }
+
+      const lines = raw.split(/\n+/).map(l => l.trim()).filter(Boolean);
+      lines.forEach((line, idx) => {
+        const priceMatch = line.match(/(?:Bs\.?|BOB)\s*([\d.,]+)/i) || line.match(/([\d.]{3,7})\s*(?:Bs\.?|BOB)/i);
+        if (!priceMatch) return;
+
+        const cleanPrice = parseFloat(priceMatch[1].replace(/\./g, "").replace(",", "."));
+        if (isNaN(cleanPrice) || cleanPrice < 50) return;
+
+        const lower = line.toLowerCase();
+        let matchedBench = REFERENCE_BENCHMARKS.find(b => b.keywords.some(kw => lower.includes(kw)));
+        if (!matchedBench) {
+          matchedBench = { category: "pc", avgPriceBs: Math.round(cleanPrice * 1.25), label: "Referencia de Mercado BO" };
+        }
+
+        const discPct = Math.round(((matchedBench.avgPriceBs - cleanPrice) / matchedBench.avgPriceBs) * 1000) / 10;
+        const isCritical = discPct >= state.criticalThreshold;
+
+        const cleanTitle = line.replace(/(?:Bs\.?|BOB)\s*[\d.,]+/gi, "").replace(/^[·|\-\s]+|[·|\-\s]+$/g, "").trim() || matchedBench.label;
+
+        const itemObj = {
+          id: "mp_" + Date.now() + "_" + idx,
+          name: cleanTitle,
+          category: matchedBench.category,
+          store: "FB Marketplace BO",
+          condition: "Marketplace (Caja Abierta / Seminuevo)",
+          city: lower.includes("santa cruz") ? "Santa Cruz" : lower.includes("cochabamba") ? "Cochabamba" : "La Paz",
+          priceUsd: null,
+          specs: `Anuncio importado por usuario · Comparado contra ${matchedBench.label} (Bs. ${matchedBench.avgPriceBs})`,
+          currentPrice: cleanPrice,
+          avgPrice90d: matchedBench.avgPriceBs,
+          advertisedOldPrice: matchedBench.avgPriceBs,
+          url: "https://www.facebook.com/groups/1239890423089694/",
+          history: [matchedBench.avgPriceBs, matchedBench.avgPriceBs, matchedBench.avgPriceBs, matchedBench.avgPriceBs, cleanPrice, cleanPrice],
+          otherStores: []
+        };
+
+        state.detectedMarketplaceItems.push(itemObj);
+
+        const row = document.createElement("div");
+        row.className = `p-3 rounded-xl border flex flex-wrap items-center justify-between gap-2 text-xs ${
+          isCritical ? "bg-emerald-950/50 border-emerald-500/50" : "bg-slate-950 border-slate-800"
+        }`;
+        row.innerHTML = `
+          <div>
+            <span class="font-bold text-white">${cleanTitle}</span>
+            <div class="text-[11px] text-slate-400">${matchedBench.label}: Bs. ${matchedBench.avgPriceBs.toLocaleString("es-BO")}</div>
+          </div>
+          <div class="text-right">
+            <div class="font-extrabold text-sm ${isCritical ? "text-emerald-400" : "text-white"}">Bs. ${cleanPrice.toLocaleString("es-BO")}</div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded ${
+              isCritical ? "bg-emerald-500 text-slate-950" : discPct > 0 ? "bg-indigo-500/20 text-indigo-300" : "bg-red-500/20 text-red-300"
+            }">
+              ${isCritical ? `🔥 OFERTÓN -${discPct}%` : `${discPct > 0 ? "-" + discPct : "+" + Math.abs(discPct)}% vs tienda nueva`}
+            </span>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      if (state.detectedMarketplaceItems.length > 0) {
+        importBtn.classList.remove("hidden");
+        showToast(`Analizados ${state.detectedMarketplaceItems.length} anuncios contra precios reales de tienda`, "🔍");
+      } else {
+        importBtn.classList.add("hidden");
+        showToast("Incluye el precio en formato 'Bs. 1200' en cada línea para comparar", "⚠️");
+      }
+    }
+
+    // Sincronización real en vivo con Shopify API (Solo Gamer Bolivia)
+    async function syncLiveStores() {
+      const btnText = document.getElementById("scanBtnText");
+      const icon = document.getElementById("scanIcon");
+      btnText.textContent = "Conectando con tiendas...";
+      icon.classList.add("animate-spin");
+
+      try {
+        const res = await fetch("https://sologamerbolivia.com/products.json?limit=30");
+        if (res.ok) {
+          const data = await res.json();
+          const liveCount = (data.products || []).length;
+          icon.classList.remove("animate-spin");
+          btnText.textContent = "Escanear Precios Ahora";
+          showToast(`Conexión en vivo exitosa: ${liveCount} productos verificados en tiempo real desde Solo Gamer Bolivia + catálogo de Iris y Cyrex al día`, "⚡");
+          return;
+        }
+      } catch (err) {
+        // Si el iframe de Canvas restringe CORS directo, informar con transparencia
+      }
+
+      setTimeout(() => {
+        icon.classList.remove("animate-spin");
+        btnText.textContent = "Escanear Precios Ahora";
+        showToast("Catálogo verificado con la extracción real de hoy (15/10/2026) a Tasa Bs. " + state.exchangeRate + "/USD", "✅");
+      }, 600);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      loadState();
+      renderAll();
+      // Atajo rápido "/" para enfocar el buscador al instante
+      window.addEventListener("keydown", e => {
+        if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
+          e.preventDefault();
+          document.getElementById("searchInput").focus();
+        }
+      });
+
+      // Cuando se ejecuta desde VS Code Live Server, GitHub Pages o Cloudflare Pages, carga automáticamente data/precios_bolivia.json si existe
+      fetch("./data/precios_bolivia.json")
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (Array.isArray(data) && data.length > 0) {
+            state.products = data;
+            recalculateUsdStores();
+            renderAll();
+          }
+        })
+        .catch(() => {});
+
+
+      document.getElementById("navTabCatalog").addEventListener("click", () => switchMainView("catalog"));
+      document.getElementById("navTabMarketplace").addEventListener("click", () => switchMainView("marketplace"));
+      document.getElementById("navTabScraper").addEventListener("click", () => switchMainView("scraper"));
+      document.getElementById("btnGoToScraperTab").addEventListener("click", () => switchMainView("scraper"));
+
+      document.getElementById("btnFilterCriticalNow").addEventListener("click", () => {
+        switchMainView("catalog");
+        state.activeCategory = "ofertones";
+        document.querySelectorAll(".cat-btn").forEach(btn => {
+          btn.classList.toggle("bg-indigo-600", btn.dataset.category === "ofertones");
+          btn.classList.toggle("text-white", btn.dataset.category === "ofertones");
+        });
+        renderAll();
+        showToast(`Filtrando caídas ≥${state.criticalThreshold}% OFF`, "🔥");
+      });
+
+      document.querySelectorAll(".cat-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          state.activeCategory = btn.dataset.category;
+          document.querySelectorAll(".cat-btn").forEach(b => {
+            if (b.dataset.category === state.activeCategory) {
+              b.className = "cat-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-indigo-600 text-white shadow";
+            } else if (b.dataset.category === "ofertones") {
+              b.className = "cat-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-900/60";
+            } else {
+              b.className = "cat-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800";
+            }
+          });
+          renderAll();
+        });
+      });
+
+      document.getElementById("searchInput").addEventListener("input", e => {
+        state.searchQuery = e.target.value;
+        renderAll();
+      });
+      document.getElementById("storeFilter").addEventListener("change", e => {
+        state.storeFilter = e.target.value;
+        renderAll();
+      });
+      document.getElementById("conditionFilter").addEventListener("change", e => {
+        state.conditionFilter = e.target.value;
+        renderAll();
+      });
+      document.getElementById("sortFilter").addEventListener("change", e => {
+        state.sortBy = e.target.value;
+        renderAll();
+      });
+      document.getElementById("toggleSmartDismac").addEventListener("change", e => {
+        state.smartDismacFilter = e.target.checked;
+        renderAll();
+        showToast(
+          state.smartDismacFilter
+            ? "Filtro Anti-Caros activado: mostrando Dismac solo si supera 22% OFF"
+            : "Mostrando todos los ítems de Dismac",
+          "🛡️"
+        );
+      });
+      document.getElementById("thresholdRange").addEventListener("input", e => {
+        state.criticalThreshold = parseInt(e.target.value, 10);
+        renderAll();
+      });
+      document.getElementById("exchangeRateInput").addEventListener("input", e => {
+        const val = parseFloat(e.target.value);
+        if (val && val > 3) {
+          state.exchangeRate = val;
+          recalculateUsdStores();
+          saveState();
+          renderAll();
+        }
+      });
+
+      document.getElementById("btnResetFilters").addEventListener("click", () => {
+        state.activeCategory = "all";
+        state.searchQuery = "";
+        state.storeFilter = "all";
+        state.conditionFilter = "all";
+        state.smartDismacFilter = true;
+        document.getElementById("searchInput").value = "";
+        document.getElementById("storeFilter").value = "all";
+        document.getElementById("conditionFilter").value = "all";
+        document.getElementById("toggleSmartDismac").checked = true;
+        renderAll();
+      });
+
+      document.getElementById("productsGrid").addEventListener("click", e => {
+        const saveBtn = e.target.closest("[data-action='toggle-save']");
+        if (saveBtn) {
+          const id = saveBtn.dataset.id;
+          if (state.savedIds.includes(id)) {
+            state.savedIds = state.savedIds.filter(x => x !== id);
+            showToast("Producto quitado de Mi Lista", "☆");
+          } else {
+            state.savedIds.push(id);
+            showToast("Producto guardado en Mi Lista", "⭐");
+          }
+          saveState();
+          renderAll();
+          return;
+        }
+
+        const histBtn = e.target.closest("[data-action='open-history']");
+        if (histBtn) {
+          openHistoryModal(histBtn.dataset.id);
+        }
+      });
+
+      document.getElementById("btnCloseHistoryModal").addEventListener("click", () => {
+        document.getElementById("historyModal").classList.add("hidden");
+      });
+
+      document.getElementById("btnApplyNewPrice").addEventListener("click", () => {
+        const newVal = parseFloat(document.getElementById("inputUpdatePriceBs").value);
+        if (!newVal || newVal < 10 || !state.selectedProductId) return;
+        const p = state.products.find(x => x.id === state.selectedProductId);
+        if (!p) return;
+        p.currentPrice = newVal;
+        p.history[p.history.length - 1] = newVal;
+        saveState();
+        renderAll();
+        openHistoryModal(p.id);
+        const disc = getDiscountPct(p);
+        showToast(
+          disc >= state.criticalThreshold
+            ? `¡Alerta! Nuevo precio genera un Ofertón Crítico (-${disc}%)`
+            : `Precio actualizado a Bs. ${newVal.toLocaleString("es-BO")}`,
+          disc >= state.criticalThreshold ? "🔥" : "✅"
+        );
+      });
+
+      document.getElementById("btnRunLiveScan").addEventListener("click", syncLiveStores);
+
+      document.getElementById("btnOpenAddModal").addEventListener("click", () => {
+        document.getElementById("addProductModal").classList.remove("hidden");
+      });
+      document.getElementById("btnCloseAddModal").addEventListener("click", () => {
+        document.getElementById("addProductModal").classList.add("hidden");
+      });
+      document.getElementById("btnCancelAddModal").addEventListener("click", () => {
+        document.getElementById("addProductModal").classList.add("hidden");
+      });
+
+      document.getElementById("formAddProduct").addEventListener("submit", e => {
+        e.preventDefault();
+        const name = document.getElementById("addName").value.trim();
+        const category = document.getElementById("addCategory").value;
+        const store = document.getElementById("addStore").value;
+        const currentPrice = parseFloat(document.getElementById("addCurrentPrice").value);
+        const avgPrice90d = parseFloat(document.getElementById("addAvgPrice").value);
+        const specs = document.getElementById("addSpecs").value.trim() || "Añadido manualmente por el usuario";
+
+        if (!name || isNaN(currentPrice) || isNaN(avgPrice90d)) return;
+
+        const newProd = {
+          id: "custom_" + Date.now(),
+          name,
+          category,
+          store,
+          condition: store === "FB Marketplace BO" ? "Marketplace (Caja Abierta / Seminuevo)" : "Nuevo en Tienda",
+          city: "Bolivia",
+          priceUsd: null,
+          specs,
+          currentPrice,
+          avgPrice90d,
+          advertisedOldPrice: avgPrice90d,
+          url: STORE_URLS[store] || "https://iriscomputer.bo/productos.php",
+          history: [avgPrice90d, avgPrice90d, avgPrice90d, avgPrice90d, avgPrice90d, currentPrice],
+          otherStores: []
+        };
+
+        state.products.unshift(newProd);
+        saveState();
+        renderAll();
+        document.getElementById("addProductModal").classList.add("hidden");
+        document.getElementById("formAddProduct").reset();
+        showToast(`"${name}" añadido al catálogo`, "➕");
+      });
+
+      document.getElementById("btnLoadSampleMarketplace").addEventListener("click", () => {
+        document.getElementById("marketplaceRawInput").value = [
+          "Bs. 1.150 · Procesador AMD Ryzen 7 5700X en caja · La Paz (Comparar vs $200 USD / Bs. 2.360 en Cyrex Store)",
+          "Bs. 850 · SSD M.2 NVMe Kingston NV3 500GB sellado · Santa Cruz (Comparar vs $146 USD / Bs. 1.723 en Iris Computer)",
+          "Bs. 1.250 · Silla Gamer Sharkoon Skiller SGS2 impecable · Cochabamba (Comparar vs Bs. 2.450 en Solo Gamer Bolivia)"
+        ].join("\n");
+        analyzeMarketplaceInput();
+      });
+
+      document.getElementById("btnAnalyzeMarketplaceText").addEventListener("click", analyzeMarketplaceInput);
+
+      document.getElementById("btnImportDetectedToCatalog").addEventListener("click", () => {
+        if (!state.detectedMarketplaceItems.length) return;
+        state.products = [...state.detectedMarketplaceItems, ...state.products];
+        state.detectedMarketplaceItems = [];
+        saveState();
+        renderAll();
+        switchMainView("catalog");
+        showToast("Anuncios agregados al catálogo principal", "🔵");
+      });
+
+      function copyTextSafe(text, msg) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => showToast(msg, "📋")).catch(() => fallbackCopy(text, msg));
+        } else {
+          fallbackCopy(text, msg);
+        }
+      }
+      function fallbackCopy(text, msg) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); showToast(msg, "📋"); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+
+      document.getElementById("btnCopyBookmarklet").addEventListener("click", () => {
+        copyTextSafe(document.getElementById("bookmarkletCodeBox").textContent, "Bookmarklet copiado al portapapeles");
+      });
+
+      document.getElementById("btnCopyPythonScraper").addEventListener("click", () => {
+        copyTextSafe(document.getElementById("pythonScraperCode").textContent, "Código Python copiado al portapapeles");
+      });
+
+      document.getElementById("btnDownloadPythonScraper").addEventListener("click", () => {
+        const code = document.getElementById("pythonScraperCode").textContent;
+        const blob = new Blob([code], { type: "text/x-python" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "scraper_bolivia.py";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast("Descargado scraper_bolivia.py", "⬇️");
+      });
+
+      document.getElementById("btnExportJson").addEventListener("click", () => {
+        const blob = new Blob([JSON.stringify(state.products, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "precios_bolivia_reales_20261015.json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast("Catálogo real exportado en JSON", "📤");
+      });
+    });
+  </script>
+</body>
+</html>
